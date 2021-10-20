@@ -26,17 +26,22 @@ main(int argc, char* argv[])
 	char volumename[B_FILE_NAME_LENGTH];
 	BVolumeRoster volumeRoster;
     BVolume bootVol;
-    volumeRoster.GetBootVolume(&bootVol);
-	bootVol.GetName(volumename);
-	dev_t bootvolumeid = dev_for_path("/boot");
-	
+    
+
 	strcpy(executable,argv[1]);
+	dev_t bootvolumeid = dev_for_path("/boot");
 	find_directory(B_SYSTEM_BIN_DIRECTORY, bootvolumeid, false, path, B_FILE_NAME_LENGTH);
 	printf("arg = %s\n", argv[1]);
-    printf("B_SYSTEM_BIN_DIRECTORY = %s\n", path);
+	printf("B_SYSTEM_BIN_DIRECTORY = %s\n", path);
+	
+	while (volumeRoster.GetNextVolume(&bootVol) == B_OK)
+	{
+	bootVol.GetName(volumename);
     printf("Volume name = %s\n", volumename);
     
-	return queryForExecutable(executable, &bootVol, path);
+	queryForExecutable(executable, &bootVol, path);
+	}
+	return B_OK;
 }
 
 
